@@ -1,0 +1,1 @@
+This is the smile detection application built using Deep Learning and open cv. This will be updated as I perform more experiments on models.
