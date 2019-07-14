@@ -10,6 +10,7 @@ from sklearn.metrics import classification_report
 from keras.preprocessing.image import img_to_array
 from keras.utils import np_utils
 from smile_detection.lenet import LeNet
+from smile_detection.minivggnet import MiniVGGNet
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -64,14 +65,32 @@ classWeight = classTotals.max() / classTotals
 
 # initialize the model
 print("[INFO] compiling model...")
-model = LeNet.build(width=28, height=28, depth=1, classes=2)
-model.compile(loss="binary_crossentropy", optimizer="adam",
-	metrics=["accuracy"])
+#model = LeNet.build(width=28, height=28, depth=1, classes=2)
+
+model = MiniVGGNet.build(
+	width=28,
+	height=28,
+	depth=1,
+	classes=2
+)
+
+
+model.compile(
+	loss="binary_crossentropy",
+	optimizer="adam",
+	metrics=["accuracy"]
+)
 
 # train the network
 print("[INFO] training network...")
-H = model.fit(trainX, trainY, validation_data=(testX, testY),
-	class_weight=classWeight, batch_size=64, epochs=15, verbose=1)
+H = model.fit(
+	trainX, trainY,
+	validation_data=(testX, testY),
+	class_weight=classWeight,
+	batch_size=64,
+	epochs=10,
+	verbose=1
+)
 
 # evaluate the network
 print("[INFO] evaluating network...")
@@ -82,6 +101,7 @@ print(classification_report(testY.argmax(axis=1),
 # save the model to disk
 print("[INFO] serializing network...")
 model.save(args["model"])
+print("[INFO] Finished writing model to disk...")
 
 # plot the training + testing loss and accuracy
 plt.style.use("ggplot")
